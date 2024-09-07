@@ -4,7 +4,7 @@ import logger from "morgan";
 import { handleAppError } from "@helpers/handleAppError";
 import appCors from "@helpers/corsHandler";
 import helmet from "helmet";
-import { IBootstrapOptions, IStaticFolder } from "./types";
+import { IBootstrapOptions, IStaticFolder } from "./";
 import connectDBs from "@helpers/mongooseConnector";
 
 const app = express();

@@ -1,4 +1,4 @@
-import { AppErrorResponseTypes } from "..";
+import { AppErrorResponseTypes } from "../";
 import { Response, Request, NextFunction } from "express";
 
 export function handleAppError(error: any, req: Request, res: Response, next: NextFunction) {

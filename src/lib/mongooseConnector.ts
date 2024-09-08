@@ -14,7 +14,11 @@ export default function connectDBs(options: IDBConnectionOptions) {
       ...options.options,
     })
     .then(() => {
-      console.log(`DB: ${options.dbName} is connected on host ${options.host ?? "127.0.0.1"} on port ${options.port ?? "27017"} `);
+      console.log(
+        `DB: ${
+          options.uri ? options.uri : `${options.dbName} is connected on host ${options.host ?? "127.0.0.1"} on port ${options.port ?? "27017"}`
+        } `
+      );
     })
     .catch((err: any) => {
       console.log("----------- DB: Error connection database -----------");

@@ -6,7 +6,7 @@ import ReqHandler from "./reqHandler";
 const initialState = {
   allowedDomains: [],
   allowedIPs: [],
-  customHeaders: undefined,
+  customHeaders: [],
   methods: "GET,POST,OPTION,PUT,DELETE,PATCH",
   allowedRoutes: [],
 };
@@ -69,22 +69,46 @@ function checkRequestMethod(allowedMethod: string, requestMethod: string) {
 export default function appCors(req: Request, res: Response, next: NextFunction, options: AppcorsProps = initialState) {
   const ip: any = req.headers["x-real-ip"] || req.ip;
   const domain: string = getDomain(req.headers);
+  const allowedMethod = options.methods ?? initialState.methods;
+  const customHeaders = options.customHeaders || [];
+  const requiredHeaders = options.requiredHeaders || [];
+
+  if (options.allowedDomains && options.allowedDomains.includes(domain)) res.header("Access-Control-Allow-Origin", domain);
+  if (!options.allowedDomains || !options.allowedDomains.length) res.header("Access-Control-Allow-Origin", "*");
+
+  let allowedHeaders = "Origin, X-Requested-With, Content-Type, Accept, Authorization ";
+  if (requiredHeaders && requiredHeaders.length > 0) {
+    requiredHeaders.forEach((header) => {
+      allowedHeaders += `,${Object.keys(header)[0]} `;
+    });
+  }
+  if (customHeaders && customHeaders.length > 0) {
+    customHeaders.forEach((header) => {
+      allowedHeaders += `,${header} `;
+    });
+  }
+
+  res.header("Access-Control-Allow-Headers", allowedHeaders);
+
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", allowedMethod);
+    return res.status(200).json({});
+  }
 
   const isAllowedDomain = checkAllowedDomain(options.allowedDomains, domain);
   const isAllowedIP = checkAllowedIps(options.allowedIPs, ip);
-  const isAllowedHeaders = checkCustomHeader(options.customHeaders, req.headers);
+  const isAllowedHeaders = checkCustomHeader(options.requiredHeaders, req.headers);
   const isAllowedMethod = checkRequestMethod(options.methods ?? initialState.methods, req.method);
-
-  let haveAllowedRoutes = false;
+  let isAllowedRoute = false;
 
   if (options.allowedRoutes && options.allowedRoutes.length) {
-    haveAllowedRoutes = options.allowedRoutes.some((route: string) => req.url.includes(route));
+    isAllowedRoute = options.allowedRoutes.some((route: string) => req.url.includes(route));
   }
 
   req = new ReqHandler(req).handleRequestBody().handleRequestQuery().get();
 
-  if ((isAllowedDomain && isAllowedIP && isAllowedMethod && isAllowedHeaders) || haveAllowedRoutes) {
-    if (options.callBack) options.callBack(next);
+  if ((isAllowedDomain && isAllowedIP && isAllowedMethod && isAllowedHeaders) || isAllowedRoute) {
+    if (options.callBack) options.callBack(req, res, next);
     else next();
   } else return sendResponse(res, 401);
 }

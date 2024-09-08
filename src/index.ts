@@ -11,7 +11,7 @@ import compression from "compression";
 const app = express();
 
 function bootstrap(options: IBootstrapOptions) {
-  connectDBs({ dbName: options.db.dbName });
+  connectDBs({ ...options.db });
 
   // Request Body Middlewares
   app.use(express.json({ limit: options.urlencoded.limit ?? "10mb" }));

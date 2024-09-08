@@ -141,7 +141,8 @@ interface OptionsUrlencoded {
 export interface AppcorsProps {
   allowedDomains?: string[];
   allowedIPs?: string[];
-  customHeaders?: { [key: string]: any }[];
+  customHeaders?: string[];
+  requiredHeaders?: { [key: string]: any }[];
   methods?: string;
   allowedRoutes?: string[];
   callBack?: Function;

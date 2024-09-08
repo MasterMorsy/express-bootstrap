@@ -48,7 +48,7 @@ function bootstrap(options: IBootstrapOptions) {
   options.routes.map((route: any) => app.use(route));
 
   // Error handling middleware
-  app.use(handleAppError);
+  app.use((error: any, req: Request, res: Response, next: NextFunction) => handleAppError(error, req, res, next, options.errorsHandler));
 
   // Server configuration
   const port = Number(options?.port ?? 9000);

@@ -5,6 +5,31 @@ export interface AppErrorResponseTypes {
     stack: any;
   };
 }
+export interface IFullAppErrorResponse {
+  error: {
+    message: string;
+    status: number;
+    stack: any;
+    date: string;
+    environment: {
+      nodeVersion: string;
+      os: {
+        platform: string;
+        release: string;
+        type: string;
+      };
+      env: string;
+    };
+    request:
+      | {
+          url: string;
+          method: string;
+          headers: any;
+          body: any;
+        }
+      | undefined;
+  };
+}
 
 export interface IDBConnectionOptions {
   dbName: string;
@@ -32,6 +57,7 @@ export interface IBootstrapOptions {
   db: IDBConnectionOptions;
   urlencoded: OptionsUrlencoded;
   compression: CompressionOptions;
+  errorsHandler?: Function;
 }
 
 interface CompressionOptions {

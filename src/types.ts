@@ -53,7 +53,7 @@ interface CompressionOptions {
    * @see {@link https://github.com/expressjs/compression#filter|`filter` documentation}
    * @see {@link https://www.npmjs.com/package/compressible|compressible module}
    */
-  filter?: CompressionFilter | undefined;
+  filter?: any;
 
   /**
    * The level of zlib compression to apply to responses. A higher level will result in better compression, but

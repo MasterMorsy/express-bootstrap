@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IDBConnectionOptions } from "../";
+import { IDBConnectionOptions } from "../types";
 
 export default function connectDBs(options: IDBConnectionOptions) {
   const uriConnection = options.uri

@@ -4,7 +4,7 @@ import logger from "morgan";
 import { handleAppError } from "./helpers/handleAppError";
 import appCors from "./helpers/corsHandler";
 import helmet from "helmet";
-import { IBootstrapOptions, IStaticFolder } from "./";
+import { IBootstrapOptions, IStaticFolder } from "./types";
 import connectDBs from "./helpers/mongooseConnector";
 import compression from "compression";
 

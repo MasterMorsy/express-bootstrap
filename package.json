@@ -1,7 +1,7 @@
 {
-  "name": "express-bootstrap",
-  "version": "1.0.1",
-  "description": "express bootstrap ",
+  "name": "express-bootstrapi",
+  "version": "1.1.0",
+  "description": "A lightweight, flexible Node.js package that simplifies the setup of Express.js applications with built-in support for database connections, CORS, logging, security middleware, and static file serving. Save time by automating common configuration tasks, allowing you to focus on building your app.",
   "main": "dist/main.js",
   "types": "dist/index.d.ts",
   "author": "MasterMorsy",
@@ -23,6 +23,13 @@
   },
   "keywords": [
     "express",
+    "express configuration",
+    "express mongoose",
+    "express mongodb",
+    "express setup",
+    "express bootstrap",
+    "server bootstrap",
+    "express bootstrapi",
     "bootstrap"
   ],
   "bugs": {
@@ -30,14 +37,16 @@
   },
   "homepage": "https://github.com/MasterMorsy/express-bootstrap#readme",
   "dependencies": {
-    "@types/node": "^22.5.4",
+    "compression": "^1.7.4",
     "express": "^4.19.2",
     "helmet": "^7.1.0",
     "mongoose": "^8.6.1",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "@types/compression": "^1.7.5",
     "@types/express": "^4.17.21",
-    "@types/morgan": "^1.9.9"
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.5.4"
   }
 }

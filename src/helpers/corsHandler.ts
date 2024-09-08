@@ -8,6 +8,7 @@ const initialState = {
   allowedIPs: [],
   customHeaders: undefined,
   methods: "GET,POST,OPTION,PUT,DELETE,PATCH",
+  allowedRoutes: [],
 };
 
 function checkCustomHeader(allowedHeaders: { [key: string]: string }[] | undefined, requestHeaders: any): boolean {
@@ -74,8 +75,16 @@ export default function appCors(req: Request, res: Response, next: NextFunction,
   const isAllowedHeaders = checkCustomHeader(options.customHeaders, req.headers);
   const isAllowedMethod = checkRequestMethod(options.methods ?? initialState.methods, req.method);
 
+  let haveAllowedRoutes = false;
+
+  if (options.allowedRoutes && options.allowedRoutes.length) {
+    haveAllowedRoutes = options.allowedRoutes.some((route: string) => req.url.includes(route));
+  }
+
   req = new ReqHandler(req).handleRequestBody().handleRequestQuery().get();
 
-  if (isAllowedDomain && isAllowedIP && isAllowedMethod && isAllowedHeaders) next();
-  else return sendResponse(res, 401);
+  if ((isAllowedDomain && isAllowedIP && isAllowedMethod && isAllowedHeaders) || haveAllowedRoutes) {
+    if (options.callBack) options.callBack(next);
+    else next();
+  } else return sendResponse(res, 401);
 }

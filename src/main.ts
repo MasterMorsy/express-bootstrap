@@ -6,14 +6,22 @@ import appCors from "@helpers/corsHandler";
 import helmet from "helmet";
 import { IBootstrapOptions, IStaticFolder } from "./";
 import connectDBs from "@helpers/mongooseConnector";
+import compression from "compression";
 
 const app = express();
 
 export default function bootstrap(options: IBootstrapOptions) {
   connectDBs({ dbName: options.db.dbName });
 
-  app.use(express.json());
-
+  // Request Body Middlewares
+  app.use(express.json({ limit: options.urlencoded.limit ?? "10mb" }));
+  app.use(express.urlencoded({ extended: options.urlencoded.extended, limit: options.urlencoded.limit ?? "10mb" }));
+  app.use(
+    compression({
+      ...options.compression,
+      level: options.compression.level ?? 6,
+    })
+  );
   // Custom Morgan format string with icons
   const customFormat = options.loggerFormat ?? ":remote-addr 🔗 :method ➡️ :url :status :status-color ⏱️ :response-time ms";
   // Use Morgan middleware with custom format
@@ -42,7 +50,8 @@ export default function bootstrap(options: IBootstrapOptions) {
   }
 
   // routes
-  app.use(options.routes);
+  options.routes.map((route: any) => app.use(route));
+
   // Error handling middleware
   app.use(handleAppError);
 

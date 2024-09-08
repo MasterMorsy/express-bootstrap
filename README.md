@@ -19,13 +19,13 @@ The main goal of **express-bootstrap** is to help developers start their project
 ## Installation
 
 ```bash
-npm install express-bootstrap
+npm install express-bootstrapi
 ```
 
 or
 
 ```bash
-yarn add express-bootstrap
+yarn add express-bootstrapi
 ```
 
 ## Usage
@@ -37,11 +37,12 @@ Here’s a quick guide on how to use the express-bootstrap package to set up you
 Create a new file, for example **bootstrap.ts**, and import the express-bootstrap package. Then, provide the necessary options to initialize the app.
 
 ```javascript
-import appRoutes from "../app/routes";
-import bootstrap from "express-bootstrap";
+import appRoutes1 from "../app/routes1";
+import appRoutes2 from "../app/routes2";
+import bootstrap from "express-bootstrapi";
 
 bootstrap({
-  routes: appRoutes,
+  routes: [appRoutes1,appRoutes2],
   staticFolders: [
     {
       path: "/",
@@ -58,7 +59,11 @@ bootstrap({
     customHeaders: [],
     allowedIPs: ["127.0.0.1"],
     allowedDomains: ["example.com", "localhost"],
+    allowedRoutes?: ['/app'],
+    callBack?: yourCallBackFunction()
   },
+  urlencoded: { limit: "5mb"},
+  compression: { level: -1 },
   helmet: {
     active: true,
   },
@@ -86,6 +91,86 @@ export default router;
 
 You can now run your app and the server will start with the configurations provided.
 
-```bash
-node bootstrap.js
+### CORS options
+
+| Property         | Type     | Description                                                                       | Example                               |
+| ---------------- | -------- | --------------------------------------------------------------------------------- | ------------------------------------- |
+| `methods`        | `String` | Specifies the HTTP methods that are allowed for cross-origin requests.            | `"get,post,delete,patch,put"`         |
+| `customHeaders`  | `Array`  | Custom headers to be added to the CORS request.                                   | `[ { "custom-token": "tokenHere" } ]` |
+| `allowedIPs`     | `Array`  | A list of specific IPs that are allowed to make CORS requests.                    | `[ "127.0.0.1" ]`                     |
+| `allowedDomains` | `Array`  | A list of domains that are allowed to make CORS requests.                         | `[ "example.com", "localhost" ]`      |
+| `allowedRoutes`  | `Array`  | A list of paths that are allowed to make CORS requests without cors restrictions. | `[ "/app", "/app2" ]`                 |
+
+### Static Folders Options
+
+| Property | Type     | Description                                                              | Example    |
+| -------- | -------- | ------------------------------------------------------------------------ | ---------- |
+| `path`   | `String` | The URL path where the static folder will be served.                     | `"/"`      |
+| `folder` | `String` | The folder name in your project that contains the static files to serve. | `"public"` |
+
+```javascript
+staticFolders: [
+  {
+    path: "/",
+    folder: "public",
+  },
+  {
+    path: "/static",
+    folder: "static",
+  },
+];
 ```
+
+### Database Connection Options
+
+| Property   | Type     | Description                                                                                        | Example                            |
+| ---------- | -------- | -------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `uri`      | `String` | The full MongoDB connection URI string. If provided, it will override other connection properties. | `"mongodb://localhost:27017/mydb"` |
+| `user`     | `String` | The username for authenticating with MongoDB.                                                      | `"dbUser"`                         |
+| `password` | `String` | The password for the MongoDB user.                                                                 | `"dbPassword"`                     |
+| `host`     | `String` | The MongoDB server hostname. Defaults to `"127.0.0.1"` if not provided.                            | `"localhost"`                      |
+| `port`     | `String` | The MongoDB server port. Defaults to `"27017"` if not provided.                                    | `"27017"`                          |
+| `dbName`   | `String` | The name of the MongoDB database.                                                                  | `"myDatabase"`                     |
+| `options`  | `Object` | Additional Mongoose-specific connection options, such as `autoIndex` and `autoCreate`.             | `{ useNewUrlParser: true }`        |
+
+#### Example Usage:
+
+```javascript
+{
+  db: {
+    uri: "", // or leave empty to construct from user, password, host, and dbName
+    user: "dbUser",
+    password: "dbPassword",
+    host: "localhost",
+    port: "27017",
+    dbName: "myDatabase",
+    options: {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  }
+}
+```
+
+With no auth and localhost configuration
+
+```javascript
+{
+  db: {
+    dbName: "myDatabase",
+  }
+}
+```
+
+### Logger Status Color Codes
+
+| Status Code Range | Color | Description                             |
+| ----------------- | ----- | --------------------------------------- |
+| `401`             | 🟡    | Yellow icon for Unauthorized (401)      |
+| `5xx`             | 🔴    | Red icon for Server errors (5xx)        |
+| `402 - 499`       | 🟠    | Orange icon for Client errors (402-499) |
+| `200 - 299`       | ✅    | Green icon for Success (2xx)            |
+
+> [**urlencoded options:** as express.urlencoded props](https://expressjs.com/en/5x/api.html#express.urlencoded)
+
+> [**compression options:** as compress props](https://www.npmjs.com/package/compression)

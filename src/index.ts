@@ -35,14 +35,14 @@ function bootstrap(options: IBootstrapOptions) {
     }
   });
 
-  app.use((req: Request, res: Response, next: NextFunction) => appCors(req, res, next, options.cors));
-  if (options.helmet && options.helmet.active) app.use(helmet(options.helmet.options ?? {}));
-
   if (options.staticFolders?.length) {
     options.staticFolders.map((staticFolder: IStaticFolder) => {
       app.use(staticFolder.path, express.static(staticFolder.folder));
     });
   }
+
+  app.use((req: Request, res: Response, next: NextFunction) => appCors(req, res, next, options.cors, (options.staticFolders = [])));
+  if (options.helmet && options.helmet.active) app.use(helmet(options.helmet.options ?? {}));
 
   // routes
   options.routes.map((route: any) => app.use(route));

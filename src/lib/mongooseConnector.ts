@@ -7,6 +7,7 @@ export default function connectDBs(options: IDBConnectionOptions) {
     : options.user
     ? `mongodb://${options.user}:${options.password}@${options.host ?? "127.0.0.1"}:${options.port ?? "27017"}/${options.dbName}`
     : `mongodb://${options.host ?? "127.0.0.1"}:${options.port ?? "27017"}/${options.dbName}`;
+
   mongoose
     .connect(uriConnection, {
       autoIndex: false,

@@ -1,6 +1,6 @@
 import sendResponse from "./sendResponse";
 import { NextFunction, Request, Response } from "express";
-import { AppcorsProps } from "./";
+import { AppcorsProps, IStaticFolder } from "./";
 import ReqHandler from "./reqHandler";
 
 const initialState = {
@@ -66,7 +66,13 @@ function checkRequestMethod(allowedMethod: string, requestMethod: string) {
   );
 }
 
-export default function appCors(req: Request, res: Response, next: NextFunction, options: AppcorsProps = initialState) {
+export default function appCors(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  options: AppcorsProps = initialState,
+  staticFolders: IStaticFolder[]
+) {
   const ip: any = req.headers["x-real-ip"] || req.ip;
   const domain: string = getDomain(req.headers);
   const allowedMethod = options.methods ?? initialState.methods;
@@ -100,6 +106,11 @@ export default function appCors(req: Request, res: Response, next: NextFunction,
   const isAllowedHeaders = checkCustomHeader(options.requiredHeaders, req.headers);
   const isAllowedMethod = checkRequestMethod(options.methods ?? initialState.methods, req.method);
   let isAllowedRoute = false;
+  let allowedRoutes = options.allowedRoutes ?? [];
+
+  if (staticFolders && staticFolders.length) {
+    staticFolders.map((staticFolder: IStaticFolder) => allowedRoutes.push(staticFolder.path));
+  }
 
   if (options.allowedRoutes && options.allowedRoutes.length) {
     isAllowedRoute = options.allowedRoutes.some((route: string) => req.url.includes(route));

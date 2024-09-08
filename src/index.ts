@@ -11,17 +11,12 @@ import compression from "compression";
 const app = express();
 
 function bootstrap(options: IBootstrapOptions) {
-  connectDBs({ ...options.db });
+  connectDBs(options.db);
 
   // Request Body Middlewares
-  app.use(express.json({ limit: options.urlencoded.limit ?? "10mb" }));
-  app.use(express.urlencoded({ extended: options.urlencoded.extended, limit: options.urlencoded.limit ?? "10mb" }));
-  app.use(
-    compression({
-      ...options.compression,
-      level: options.compression.level ?? 6,
-    })
-  );
+  app.use(express.json(options.urlencoded ?? {}));
+  app.use(express.urlencoded(options.urlencoded ?? {}));
+  app.use(compression(options.compression ?? {}));
   // Custom Morgan format string with icons
   const customFormat = options.loggerFormat ?? ":remote-addr 🔗 :method ➡️ :url :status :status-color ⏱️ :response-time ms";
   // Use Morgan middleware with custom format
@@ -41,7 +36,7 @@ function bootstrap(options: IBootstrapOptions) {
   });
 
   app.use((req: Request, res: Response, next: NextFunction) => appCors(req, res, next, options.cors));
-  if (options.helmet && options.helmet.active) app.use(helmet(options.helmet.options));
+  if (options.helmet && options.helmet.active) app.use(helmet(options.helmet.options ?? {}));
 
   if (options.staticFolders?.length) {
     options.staticFolders.map((staticFolder: IStaticFolder) => {

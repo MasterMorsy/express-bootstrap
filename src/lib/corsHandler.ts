@@ -1,6 +1,6 @@
 import sendResponse from "./sendResponse";
 import { NextFunction, Request, Response } from "express";
-import { AppcorsProps } from "../types";
+import { AppcorsProps } from "./";
 import ReqHandler from "./reqHandler";
 
 const initialState = {

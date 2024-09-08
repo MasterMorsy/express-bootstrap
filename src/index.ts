@@ -1,11 +1,11 @@
 require("dotenv").config();
 import express, { NextFunction, Request, Response } from "express";
 import logger from "morgan";
-import { handleAppError } from "./helpers/handleAppError";
-import appCors from "./helpers/corsHandler";
+import { handleAppError } from "./lib/handleAppError";
+import appCors from "./lib/corsHandler";
 import helmet from "helmet";
-import { IBootstrapOptions, IStaticFolder } from "./types";
-import connectDBs from "./helpers/mongooseConnector";
+import { IBootstrapOptions, IStaticFolder } from "./lib";
+import connectDBs from "./lib/mongooseConnector";
 import compression from "compression";
 
 const app = express();

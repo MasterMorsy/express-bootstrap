@@ -10,7 +10,7 @@ import compression from "compression";
 
 const app = express();
 
-export default function bootstrap(options: IBootstrapOptions) {
+function bootstrap(options: IBootstrapOptions) {
   connectDBs({ dbName: options.db.dbName });
 
   // Request Body Middlewares
@@ -63,3 +63,5 @@ export default function bootstrap(options: IBootstrapOptions) {
     console.log(`SERVER: ${options.name ?? ""} Service run on ${host}:${port}`);
   });
 }
+
+module.exports = bootstrap;

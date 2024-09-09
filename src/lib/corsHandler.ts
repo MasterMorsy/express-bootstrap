@@ -78,14 +78,16 @@ export default function appCors(
   options: AppcorsProps = initialState,
   staticFolders: IStaticFolder[]
 ) {
+  res.header("Access-Control-Allow-Origin", "*");
+
   const ip: any = req.headers?.["x-real-ip"] || req.ip;
   const domain: string = getDomain(req.headers);
   const allowedMethod = options.methods ?? initialState.methods;
   const customHeaders = options.customHeaders || [];
   const requiredHeaders = options.requiredHeaders || [];
 
-  if (options.allowedDomains && options.allowedDomains.includes(domain)) res.header("Access-Control-Allow-Origin", domain);
-  if (!options.allowedDomains || !options.allowedDomains.length) res.header("Access-Control-Allow-Origin", "*");
+  // if (options.allowedDomains && options.allowedDomains.includes(domain)) res.header("Access-Control-Allow-Origin", domain);
+  // if (!options.allowedDomains || !options.allowedDomains.length) res.header("Access-Control-Allow-Origin", "*");
 
   let allowedHeaders = "Origin, X-Requested-With, Content-Type, Accept, Authorization ";
   if (requiredHeaders && requiredHeaders.length > 0) {

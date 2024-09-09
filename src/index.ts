@@ -41,7 +41,7 @@ function bootstrap(options: IBootstrapOptions) {
     });
   }
 
-  app.use((req: Request, res: Response, next: NextFunction) => appCors(req, res, next, options.cors, (options.staticFolders = [])));
+  app.use((error: any, req: Request, res: Response, next: NextFunction) => appCors(req, res, next, options.cors, (options.staticFolders = [])));
   if (options.helmet && options.helmet.active) app.use(helmet(options.helmet.options ?? {}));
 
   // routes

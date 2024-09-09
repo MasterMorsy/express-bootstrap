@@ -22,6 +22,8 @@ function checkCustomHeader(allowedHeaders: { [key: string]: string }[] | undefin
       for (const allowedHeader of allowedHeaders) {
         if (allowedHeader[header.toLowerCase()] === requestHeaders[header.toLowerCase()]) {
           return true;
+        } else {
+          return false;
         }
       }
       return false;

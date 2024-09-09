@@ -78,7 +78,7 @@ export default function appCors(
   options: AppcorsProps = initialState,
   staticFolders: IStaticFolder[]
 ) {
-  const ip: any = req.headers["x-real-ip"] || req.ip;
+  const ip: any = req.headers?.["x-real-ip"] || req.ip;
   const domain: string = getDomain(req.headers);
   const allowedMethod = options.methods ?? initialState.methods;
   const customHeaders = options.customHeaders || [];

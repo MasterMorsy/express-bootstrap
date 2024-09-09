@@ -18,6 +18,12 @@ function checkCustomHeader(allowedHeaders: { [key: string]: string }[] | undefin
   // If no allowed headers are defined, assume all custom headers are valid
   if (!allowedHeaders || !allowedHeaders.length) return true;
 
+  if (allowedHeaders && allowedHeaders.length) {
+    allowedHeaders.map((header) => {
+      if (!requestHeaders[Object.keys(header)[0]]) return false;
+    });
+  }
+
   // Ensure that all custom headers in the request match the allowed headers
   const isValidCustomHeaders = customHeaders.every((header) => {
     // Find the matching allowed header based on the header name (case insensitive)

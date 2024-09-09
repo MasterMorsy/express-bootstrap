@@ -12,25 +12,27 @@ const initialState = {
 };
 
 function checkCustomHeader(allowedHeaders: { [key: string]: string }[] | undefined, requestHeaders: any): boolean {
-  // Check if the request contains any custom headers
-  const customHeaders = Object.keys(requestHeaders).filter((header) => header.startsWith("x-"));
-  // Check if each custom header matches its expected value from allowedHeaders
+  // Extract custom headers from the request (headers that start with "x-")
+  const customHeaders = Object.keys(requestHeaders).filter((header) => header.toLowerCase().startsWith("x-"));
 
+  // If no allowed headers are defined, assume all custom headers are valid
   if (!allowedHeaders || !allowedHeaders.length) return true;
-  else if (allowedHeaders?.length && customHeaders.length) {
-    const isValidCustomHeaders = customHeaders.every((header) => {
-      for (const allowedHeader of allowedHeaders) {
-        if (allowedHeader[header.toLowerCase()] === requestHeaders[header.toLowerCase()]) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-      return false;
-    });
-    return isValidCustomHeaders;
-  }
-  return false;
+
+  // Ensure that all custom headers in the request match the allowed headers
+  const isValidCustomHeaders = customHeaders.every((header) => {
+    // Find the matching allowed header based on the header name (case insensitive)
+    const matchedAllowedHeader = allowedHeaders.find((allowedHeader) => allowedHeader[header.toLowerCase()]);
+
+    // If a match is found, check if the values match
+    if (matchedAllowedHeader) {
+      return matchedAllowedHeader[header.toLowerCase()] === requestHeaders[header];
+    }
+
+    // If no match is found, return false
+    return false;
+  });
+
+  return isValidCustomHeaders;
 }
 
 function checkAllowedDomain(allowedDomains: string[] = [], domain: string): boolean {

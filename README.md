@@ -192,4 +192,4 @@ With no auth and localhost configuration
 
 ### helmet options
 
-> [**helmet options:** as compress props](https://www.npmjs.com/package/helmet)
+> [**helmet options:** as helmet props](https://www.npmjs.com/package/helmet)

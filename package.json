@@ -19,7 +19,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MasterMorsy/express-bootstrap.git"
+    "url": "git+https://github.com/MasterMorsy/express-bootstrapi.git"
   },
   "keywords": [
     "express",
@@ -33,9 +33,9 @@
     "bootstrap"
   ],
   "bugs": {
-    "url": "https://github.com/MasterMorsy/express-bootstrap/issues"
+    "url": "https://github.com/MasterMorsy/express-bootstrapi/issues"
   },
-  "homepage": "https://github.com/MasterMorsy/express-bootstrap#readme",
+  "homepage": "https://github.com/MasterMorsy/express-bootstrapi#readme",
   "dependencies": {
     "compression": "^1.7.4",
     "express": "^4.19.2",

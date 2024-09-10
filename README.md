@@ -102,15 +102,15 @@ You can now run your app and the server will start with the configurations provi
 
 ### CORS options
 
-| Property          | Type       | Description                                                             | Example                                                                         |
-| ----------------- | ---------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `methods`         | `String`   | Specifies the HTTP methods that are allowed for cross-origin requests.  | `"get,post,delete,patch,put"`                                                   |
-| `customHeaders`   | `Array`    | Custom headers to be added to the CORS Allowed headers request.         | `[ { "custom-token": "tokenHere" } ]`                                           |
-| `allowedIPs`      | `Array`    | A list of specific IPs that are allowed to make requests.               | `[ "127.0.0.1" ]`                                                               |
-| `allowedDomains`  | `Array`    | A list of domains that are allowed to make requests.                    | `[ "example.com", "localhost" ]`                                                |
-| `allowedRoutes`   | `Array`    | A list of paths that are allowed to requests without cors restrictions. | `[ "/app", "/app2" ]`                                                           |
-| `requiredHeaders` | `Array`    | A list of required headers that restrct application respond without it. | `[{ "x-app-token": "motajerToken",},{"x-app-developer": "motajerDeveloper",},]` |
-| `callBack`        | `Function` | A Function to handle extra application features at cors level.          | ``                                                                              |
+| Property          | Type       | Description                                                             | Example                                                                       |
+| ----------------- | ---------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `methods`         | `String`   | Specifies the HTTP methods that are allowed for cross-origin requests.  | `"get,post,delete,patch,put"`                                                 |
+| `customHeaders`   | `Array`    | Custom headers to be added to the CORS Allowed headers request.         | `[ { "custom-token": "tokenHere" } ]`                                         |
+| `allowedIPs`      | `Array`    | A list of specific IPs that are allowed to make requests.               | `[ "127.0.0.1" ]`                                                             |
+| `allowedDomains`  | `Array`    | A list of domains that are allowed to make requests.                    | `[ "example.com", "localhost" ]`                                              |
+| `allowedRoutes`   | `Array`    | A list of paths that are allowed to requests without cors restrictions. | `[ "/app", "/app2" ]`                                                         |
+| `requiredHeaders` | `Array`    | A list of required headers that restrct application respond without it. | `[{ "required-header1": "your-value",},{"required-header2": "your-value",},]` |
+| `callBack`        | `Function` | A Function to handle extra application features at cors level.          | ``                                                                            |
 
 ### Static Folders Options
 

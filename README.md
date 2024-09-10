@@ -193,3 +193,11 @@ With no auth and localhost configuration
 ### helmet options
 
 > [**helmet options:** as helmet props](https://www.npmjs.com/package/helmet)
+
+### Real world exmaples
+
+> [How to use package at simple express project](https://github.com/MasterMorsy/express-bootstrapi/blob/main/examples/simpleConfig.js)
+
+> [How to use bug tracker send by email template](https://github.com/MasterMorsy/express-bootstrapi/blob/main/examples/bugTrackerEmail.js)
+
+> [How to cors handler to implement middleware approach](https://github.com/MasterMorsy/express-bootstrapi/blob/main/examples/corsCallBack.js)

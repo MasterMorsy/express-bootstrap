@@ -1,6 +1,6 @@
 import sendResponse from "./sendResponse";
 import { NextFunction, Request, Response } from "express";
-import { AppcorsProps, IStaticFolder } from "./";
+import { AppcorsProps, IIP, IRequiredHeader, IStaticFolder } from "./";
 import ReqHandler from "./reqHandler";
 
 const initialState = {
@@ -11,26 +11,26 @@ const initialState = {
   allowedRoutes: [],
 };
 
-function checkCustomHeader(allowedHeaders: any, requestHeaders: any): boolean {
-  let result = true;
+function checkRequiredHeader(requiredHeaders: IRequiredHeader[], requestHeaders: { [key: string]: any }) {
+  let result = false;
 
-  // Extract custom headers from the request (headers that start with "x-")
-  const customHeaders = Object.keys(requestHeaders).filter((header) => header.toLowerCase().startsWith("x-"));
-  // If no allowed headers are defined, assume all custom headers are valid
-  if (!allowedHeaders || !allowedHeaders.length) return true;
-  if (allowedHeaders && allowedHeaders.length) {
-    allowedHeaders.map((header: any) => {
-      if (!requestHeaders[`${Object.keys(header)[0]}`]) return false;
+  if (requiredHeaders && requiredHeaders.length) {
+    /**
+     * 01 - must ensure that all required headers are present
+     * 02 - must ensure that all required headers values are matched
+     */
+
+    const haveMissingHeaders = requiredHeaders.find((requiredHeader) => {
+      let key = Object.keys(requiredHeader)[0];
+      return !requestHeaders[key];
     });
-  }
 
-  // Ensure that all custom headers in the request match the allowed headers
-  const wrongValue = customHeaders.find(
-    (header) => allowedHeaders.find((allowedHeader: any) => allowedHeader[header.toLowerCase()])[header] != requestHeaders[header]
-  );
+    const oneRequiredHeadetNotMatchValue = requiredHeaders.find((requiredHeader) => {
+      let key = Object.keys(requiredHeader)[0];
+      return requestHeaders[key] != requiredHeader[key];
+    });
 
-  if (wrongValue) {
-    result = false;
+    if (!haveMissingHeaders && !oneRequiredHeadetNotMatchValue) result = true;
   }
 
   return result;
@@ -40,7 +40,7 @@ function checkAllowedDomain(allowedDomains: string[] = [], domain: string): bool
   return allowedDomains.includes(domain) || !allowedDomains.length ? true : false;
 }
 
-function checkAllowedIps(allowedIPs: string[] = [], ip: string): boolean {
+function checkAllowedIps(allowedIPs: string[] = [], ip: IIP = ""): boolean {
   return allowedIPs.includes(ip) || !allowedIPs.length ? true : false;
 }
 
@@ -76,10 +76,11 @@ export default function appCors(
   res: Response,
   next: NextFunction,
   options: AppcorsProps = initialState,
-  staticFolders: IStaticFolder[] = []
+  staticFolders: IStaticFolder[] = [],
+  poweredBy = ""
 ) {
-  const ip: any = req.headers?.["x-real-ip"] || req.ip;
-  const domain: string = getDomain(req.headers);
+  const ip: any = req.headers["x-real-ip"] || req.ip;
+  const domain = getDomain(req.headers);
   const allowedMethod = options.methods ?? initialState.methods;
   const customHeaders = options.customHeaders || [];
   const requiredHeaders = options.requiredHeaders || [];
@@ -101,6 +102,8 @@ export default function appCors(
 
   res.header("Access-Control-Allow-Headers", allowedHeaders);
 
+  if (poweredBy) res.setHeader("X-Powered-By", poweredBy);
+
   if (req.method === "OPTIONS") {
     res.header("Access-Control-Allow-Methods", allowedMethod);
     return res.status(200).json({});
@@ -108,22 +111,22 @@ export default function appCors(
 
   const isAllowedDomain = checkAllowedDomain(options.allowedDomains, domain);
   const isAllowedIP = checkAllowedIps(options.allowedIPs, ip);
-  const isAllowedHeaders = checkCustomHeader(options.requiredHeaders, req.headers);
+  const isRequiredHeadersExist = checkRequiredHeader(requiredHeaders, req.headers);
   const isAllowedMethod = checkRequestMethod(options.methods ?? initialState.methods, req.method);
   let isAllowedRoute = false;
   let allowedRoutes = options.allowedRoutes ?? [];
 
   if (staticFolders && staticFolders.length) {
-    staticFolders.map((staticFolder: IStaticFolder) => allowedRoutes.push(staticFolder.path));
+    staticFolders.map((staticFolder) => allowedRoutes.push(staticFolder.path));
   }
 
   if (options.allowedRoutes && options.allowedRoutes.length) {
-    isAllowedRoute = options.allowedRoutes.some((route: string) => req.url.includes(route));
+    isAllowedRoute = options.allowedRoutes.some((route) => req.url.includes(route));
   }
 
   req = new ReqHandler(req).handleRequestBody().handleRequestQuery().get();
 
-  if ((isAllowedDomain && isAllowedIP && isAllowedMethod && isAllowedHeaders) || isAllowedRoute) {
+  if ((isAllowedDomain && isAllowedIP && isAllowedMethod && isRequiredHeadersExist) || isAllowedRoute) {
     if (options.callBack) options.callBack(req, res, next);
     else next();
   } else return sendResponse(res, 401);

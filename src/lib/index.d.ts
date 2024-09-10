@@ -11,13 +11,13 @@ export interface IFullAppErrorResponse {
     status: number;
     stack: any;
     date: string;
+    os: {
+      platform: string;
+      release: string;
+      type: string;
+    };
     environment: {
       nodeVersion: string;
-      os: {
-        platform: string;
-        release: string;
-        type: string;
-      };
       env: string;
     };
     request:
@@ -58,6 +58,7 @@ export interface IBootstrapOptions {
   urlencoded: OptionsUrlencoded;
   compression: CompressionOptions;
   errorsHandler?: Function;
+  poweredBy?: string;
 }
 
 interface CompressionOptions {
@@ -164,11 +165,15 @@ interface OptionsUrlencoded {
   limit?: number | string | undefined;
 }
 
+export type IIP = string | undefined;
+
+export type IRequiredHeader = { [key: string]: any };
+
 export interface AppcorsProps {
   allowedDomains?: string[];
   allowedIPs?: string[];
   customHeaders?: string[];
-  requiredHeaders?: { [key: string]: any }[];
+  requiredHeaders?: IRequiredHeader[];
   methods?: string;
   allowedRoutes?: string[];
   callBack?: Function;

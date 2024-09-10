@@ -10,13 +10,13 @@ function createErrorResponse(error: any, req?: Request) {
       status: error.status || 500,
       stack: error.stack,
       date: new Date().toISOString(),
+      os: {
+        platform: os.platform(),
+        release: os.release(),
+        type: os.type(),
+      },
       environment: {
         nodeVersion: process.version,
-        os: {
-          platform: os.platform(),
-          release: os.release(),
-          type: os.type(),
-        },
         env: process.env.NODE_ENV ?? "Development",
       },
       request: req
@@ -33,22 +33,13 @@ function createErrorResponse(error: any, req?: Request) {
   return fullErrorResponse;
 }
 
-// Global error handler for uncaught exceptions
-process.on("uncaughtException", (error: Error) => {
-  console.log("uncaughtException", error);
-  process.exit(1);
-});
-
-// Global error handler for unhandled promise rejections
-process.on("unhandledRejection", (reason: any) => {
-  console.log("unhandledRejection", reason);
-});
-
 export function handleAppError(error: any, req: Request, res: Response, next: NextFunction, errorHandler?: Function) {
   const status: number = error.status || 500;
 
   const bugTrackerErrorObject = createErrorResponse(error, req);
   if (errorHandler) errorHandler(bugTrackerErrorObject);
+
+  console.log("bug tracker", bugTrackerErrorObject?.error);
 
   // Construct error response
   const errorResponse: AppErrorResponseTypes = {
@@ -62,6 +53,18 @@ export function handleAppError(error: any, req: Request, res: Response, next: Ne
   if (process.env.NODE_ENV === "development") {
     errorResponse.error.stack = error.stack;
   }
+
+  // Global error handler for uncaught exceptions
+  process.on("uncaughtException", (error) => {
+    if (errorHandler) errorHandler(bugTrackerErrorObject);
+    console.log("uncaughtException", error);
+    process.exit(1);
+  });
+  // Global error handler for uncaught exceptions
+  process.on("unhandledRejection", (error) => {
+    if (errorHandler) errorHandler(bugTrackerErrorObject);
+    console.log("unhandledRejection", error);
+  });
 
   // Send error response to the client
   res.status(status).json(errorResponse);

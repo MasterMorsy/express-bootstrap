@@ -7,22 +7,23 @@ import helmet from "helmet";
 import { IBootstrapOptions, IStaticFolder } from "./lib";
 import connectDBs from "./lib/mongooseConnector";
 import compression from "compression";
+import globalRoutesHandler from "./lib/globalRoutesHandler";
 
 const app = express();
 
 function bootstrap(options: IBootstrapOptions) {
-  app.use((req: Request, res: Response, next: NextFunction) => appCors(req, res, next, options.cors, options.staticFolders));
-
+  // Disable the X-Powered-By header
+  app.disable("x-powered-by");
   // Request Body Middlewares
   app.use(express.json(options.urlencoded ?? {}));
   app.use(express.urlencoded(options.urlencoded ?? {}));
   app.use(compression(options.compression ?? {}));
+  if (options.helmet && options.helmet.active) app.use(helmet(options.helmet.options ?? {}));
+
   // Custom Morgan format string with icons
   const customFormat = options.loggerFormat ?? ":remote-addr 🔗 :method ➡️ :url :status :status-color ⏱️ :response-time ms";
-  // Use Morgan middleware with custom format
-  app.use(logger(customFormat));
   // Define custom token for status color
-  logger.token("status-color", (_: Request, res: Response) => {
+  logger.token("status-color", (_, res) => {
     const statusCode = res.statusCode;
     if (statusCode === 401) {
       return "🟡"; // Yellow icon for 401 status code
@@ -34,21 +35,28 @@ function bootstrap(options: IBootstrapOptions) {
       return "✅"; // Green icon for successful status codes
     }
   });
+  // Use Morgan middleware with custom format
+  app.use(
+    logger(customFormat, {
+      skip: (req) => req.method === "OPTIONS",
+    })
+  );
 
-  if (options.helmet && options.helmet.active) app.use(helmet(options.helmet.options ?? {}));
+  app.use((req: Request, res: Response, next: NextFunction) => appCors(req, res, next, options.cors, options.staticFolders, options.poweredBy));
 
   connectDBs(options.db);
-
-  // routes
-  options.routes.map((route: any) => app.use(route));
-  // Error handling middleware
-  app.use((error: any, req: Request, res: Response, next: NextFunction) => handleAppError(error, req, res, next, options.errorsHandler));
 
   if (options.staticFolders?.length) {
     options.staticFolders.map((staticFolder: IStaticFolder) => {
       app.use(staticFolder.path, express.static(staticFolder.folder));
     });
   }
+
+  // routes
+  options.routes.map((route) => app.use(globalRoutesHandler(route)));
+
+  // Error handling middleware
+  app.use((error: any, req: Request, res: Response, next: NextFunction) => handleAppError(error, req, res, next, options.errorsHandler));
 
   // Server configuration
   const port = Number(options?.port ?? 9000);

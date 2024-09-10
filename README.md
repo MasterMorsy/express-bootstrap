@@ -10,7 +10,7 @@ The main goal of **express-bootstrap** is to help developers start their project
 
 - **Automatic Database Connection**: Connects to MongoDB using Mongoose with just a database name.
 - **Customizable Logging**: Integrates with `morgan` for logging requests with customizable formats and emoji-based status code coloring.
-- **CORS Handling**: Customizable CORS options to define allowed domains, IPs, and methods.
+- **CORS Handling**: Customizable CORS options to define allowed domains, IPs, Headers and methods.
 - **Helmet Integration**: Adds security middleware with Helmet, configurable and easy to enable or disable.
 - **Static File Serving**: Easily serve multiple static folders with different paths.
 - **Error Handling**: Built-in error handling middleware.
@@ -56,17 +56,26 @@ bootstrap({
   db: { dbName: "myDatabase" },
   cors: {
     methods: "get,post,delete,patch,put",
-    customHeaders: [],
+    customHeaders: ["customer", "authorization"],
+    requiredHeaders : [
+      {
+        "customer-required-header": "value1",
+      }
+      {
+        "customer-required-header2": "value2",
+      }
+    ],
     allowedIPs: ["127.0.0.1"],
     allowedDomains: ["example.com", "localhost"],
     allowedRoutes?: ['/app'],
     callBack?: yourCallBackFunction()
   },
-  urlencoded: { limit: "5mb"},
+  urlencoded: {  extended: true,limit: "5mb"},
   compression: { level: -1 },
   helmet: {
     active: true,
   },
+  errorsHandler: (errors) => console.log(errors),
   loggerFormat: ":remote-addr 🔗 :method ➡️ :url :status :status-color ⏱️ :response-time ms",
   port: 3000,
 });
@@ -93,13 +102,15 @@ You can now run your app and the server will start with the configurations provi
 
 ### CORS options
 
-| Property         | Type     | Description                                                                       | Example                               |
-| ---------------- | -------- | --------------------------------------------------------------------------------- | ------------------------------------- |
-| `methods`        | `String` | Specifies the HTTP methods that are allowed for cross-origin requests.            | `"get,post,delete,patch,put"`         |
-| `customHeaders`  | `Array`  | Custom headers to be added to the CORS request.                                   | `[ { "custom-token": "tokenHere" } ]` |
-| `allowedIPs`     | `Array`  | A list of specific IPs that are allowed to make CORS requests.                    | `[ "127.0.0.1" ]`                     |
-| `allowedDomains` | `Array`  | A list of domains that are allowed to make CORS requests.                         | `[ "example.com", "localhost" ]`      |
-| `allowedRoutes`  | `Array`  | A list of paths that are allowed to make CORS requests without cors restrictions. | `[ "/app", "/app2" ]`                 |
+| Property          | Type       | Description                                                             | Example                                                                         |
+| ----------------- | ---------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `methods`         | `String`   | Specifies the HTTP methods that are allowed for cross-origin requests.  | `"get,post,delete,patch,put"`                                                   |
+| `customHeaders`   | `Array`    | Custom headers to be added to the CORS Allowed headers request.         | `[ { "custom-token": "tokenHere" } ]`                                           |
+| `allowedIPs`      | `Array`    | A list of specific IPs that are allowed to make requests.               | `[ "127.0.0.1" ]`                                                               |
+| `allowedDomains`  | `Array`    | A list of domains that are allowed to make requests.                    | `[ "example.com", "localhost" ]`                                                |
+| `allowedRoutes`   | `Array`    | A list of paths that are allowed to requests without cors restrictions. | `[ "/app", "/app2" ]`                                                           |
+| `requiredHeaders` | `Array`    | A list of required headers that restrct application respond without it. | `[{ "x-app-token": "motajerToken",},{"x-app-developer": "motajerDeveloper",},]` |
+| `callBack`        | `Function` | A Function to handle extra application features at cors level.          | ``                                                                              |
 
 ### Static Folders Options
 
@@ -171,6 +182,14 @@ With no auth and localhost configuration
 | `402 - 499`       | 🟠    | Orange icon for Client errors (402-499) |
 | `200 - 299`       | ✅    | Green icon for Success (2xx)            |
 
+### urlencoded options
+
 > [**urlencoded options:** as express.urlencoded props](https://expressjs.com/en/5x/api.html#express.urlencoded)
 
+### compression options
+
 > [**compression options:** as compress props](https://www.npmjs.com/package/compression)
+
+### helmet options
+
+> [**helmet options:** as compress props](https://www.npmjs.com/package/helmet)

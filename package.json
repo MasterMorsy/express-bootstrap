@@ -1,6 +1,6 @@
 {
   "name": "express-bootstrapi",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "A lightweight, flexible Node.js package that simplifies the setup of Express.js applications with built-in support for database connections, CORS, logging, security middleware, and static file serving. Save time by automating common configuration tasks, allowing you to focus on building your app.",
   "main": "dist/index.js",
   "types": "dist/lib/index.d.ts",

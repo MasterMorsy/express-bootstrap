@@ -66,5 +66,7 @@ function bootstrap(options: IBootstrapOptions) {
     console.log(`SERVER: ${options.name ?? ""} Service run on ${host}:${port}`);
   });
 }
-
+// CommonJS export
 module.exports = bootstrap;
+// Optional: Add ES Module compatibility
+module.exports.default = bootstrap;

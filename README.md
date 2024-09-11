@@ -39,7 +39,7 @@ Create a new file, for example **bootstrap.ts**, and import the express-bootstra
 ```javascript
 import appRoutes1 from "../app/routes1";
 import appRoutes2 from "../app/routes2";
-import bootstrap from "express-bootstrapi";
+const bootstrap = require("express-bootstrapi");
 
 bootstrap({
   routes: [appRoutes1,appRoutes2],

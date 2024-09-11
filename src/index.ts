@@ -68,5 +68,5 @@ function bootstrap(options: IBootstrapOptions) {
 }
 // CommonJS export
 module.exports = bootstrap;
-// Optional: Add ES Module compatibility
+// ES Module export
 module.exports.default = bootstrap;

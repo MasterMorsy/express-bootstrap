@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 import { IDBConnectionOptions } from "./";
 
-export default function connectDBs(options: IDBConnectionOptions) {
+export default async function connectDBs(options: IDBConnectionOptions) {
   const uriConnection = options.uri
     ? options.uri
     : options.user
     ? `mongodb://${options.user}:${options.password}@${options.host ?? "127.0.0.1"}:${options.port ?? "27017"}/${options.dbName}`
     : `mongodb://${options.host ?? "127.0.0.1"}:${options.port ?? "27017"}/${options.dbName}`;
 
-  mongoose
+  await mongoose
     .connect(uriConnection, {
       autoIndex: false,
       autoCreate: false,

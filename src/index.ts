@@ -11,7 +11,7 @@ import globalRoutesHandler from "./lib/globalRoutesHandler";
 
 const app = express();
 
-function bootstrap(options: IBootstrapOptions) {
+async function bootstrap(options: IBootstrapOptions) {
   // Disable the X-Powered-By header
   app.disable("x-powered-by");
   // Request Body Middlewares
@@ -42,9 +42,9 @@ function bootstrap(options: IBootstrapOptions) {
     })
   );
 
-  app.use((req: Request, res: Response, next: NextFunction) => appCors(req, res, next, options.cors, options.staticFolders, options.poweredBy));
+  await connectDBs(options.db);
 
-  connectDBs(options.db);
+  app.use((req: Request, res: Response, next: NextFunction) => appCors(req, res, next, options.cors, options.staticFolders, options.poweredBy));
 
   if (options.staticFolders?.length) {
     options.staticFolders.map((staticFolder: IStaticFolder) => {

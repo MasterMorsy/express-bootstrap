@@ -7,7 +7,7 @@ const asyncWrapper = (fn: any) => {
 };
 
 const globalRoutesHandler = (router: any) => {
-  router?._router?.stack.forEach((layer: any) => {
+  router?.stack.forEach((layer: any) => {
     if (layer.route) {
       layer.route.stack.forEach((routeLayer: any) => {
         routeLayer.handle = asyncWrapper(routeLayer.handle);

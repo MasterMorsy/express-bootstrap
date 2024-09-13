@@ -42,7 +42,20 @@ import appRoutes2 from "../app/routes2";
 const bootstrap = require("express-bootstrapi");
 
 bootstrap({
+  // use one of this approaches to initialize app routes [routes OR routesPath]
   routes: [appRoutes1,appRoutes2],
+  routesPath: [
+    {
+      path: "/api/v2/users",
+      middleware: isUser,
+      routes: appRoutes1,
+    },
+    {
+      path: "/api/v2/shop",
+      middleware: null,
+      routes: appRoutes2,
+    }
+  ],
   staticFolders: [
     {
       path: "/",

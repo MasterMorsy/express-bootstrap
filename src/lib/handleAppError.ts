@@ -1,4 +1,4 @@
-import { AppErrorResponseTypes, IFullAppErrorResponse } from "./";
+import { AppErrorResponseTypes, IFullAppErrorResponse } from ".";
 import { Response, Request, NextFunction } from "express";
 import os from "os";
 

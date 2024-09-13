@@ -13,7 +13,8 @@ const app = express();
 
 async function bootstrap(options: IBootstrapOptions) {
   // Disable the X-Powered-By header
-  app.disable("x-powered-by"); // Request Body Middlewares
+  app.disable("x-powered-by");
+
   app.use(express.json(options.urlencoded ?? {}));
   app.use(express.urlencoded(options.urlencoded ?? {}));
   app.use(compression(options.compression ?? {}));
@@ -60,10 +61,10 @@ async function bootstrap(options: IBootstrapOptions) {
     options.routesPath.forEach((routeConfig) => {
       // If middleware exists, apply it
       if (routeConfig.middleware) {
-        app.use(routeConfig.path, routeConfig.middleware, globalRoutesHandler(routeConfig.routes));
+        app.use(routeConfig.path, routeConfig.middleware, globalRoutesHandler(routeConfig.routes)); // Directly pass `routes`
       } else {
         // No middleware, just use the routes
-        app.use(routeConfig.path, globalRoutesHandler(routeConfig.routes));
+        app.use(routeConfig.path, globalRoutesHandler(routeConfig.routes)); // Directly pass `routes`
       }
     });
   }

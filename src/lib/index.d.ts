@@ -54,6 +54,7 @@ export interface IBootstrapOptions {
   };
   loggerFormat?: string;
   routes: Array<any>;
+  routesPath: Array<{ path: string; middleware: Fucntion | null; routes: any }>;
   db: IDBConnectionOptions;
   urlencoded: OptionsUrlencoded;
   compression: CompressionOptions;

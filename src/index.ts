@@ -13,8 +13,7 @@ const app = express();
 
 async function bootstrap(options: IBootstrapOptions) {
   // Disable the X-Powered-By header
-  app.disable("x-powered-by");
-  // Request Body Middlewares
+  app.disable("x-powered-by"); // Request Body Middlewares
   app.use(express.json(options.urlencoded ?? {}));
   app.use(express.urlencoded(options.urlencoded ?? {}));
   app.use(compression(options.compression ?? {}));
@@ -53,7 +52,21 @@ async function bootstrap(options: IBootstrapOptions) {
   }
 
   // routes
-  options.routes.map((route) => app.use(globalRoutesHandler(route)));
+  if (options.routes?.length) {
+    options.routes.map((route) => app.use(globalRoutesHandler(route?._router)));
+  }
+
+  if (options.routesPath?.length) {
+    options.routesPath.forEach((routeConfig) => {
+      // If middleware exists, apply it
+      if (routeConfig.middleware) {
+        app.use(routeConfig.path, routeConfig.middleware, globalRoutesHandler(routeConfig.routes));
+      } else {
+        // No middleware, just use the routes
+        app.use(routeConfig.path, globalRoutesHandler(routeConfig.routes));
+      }
+    });
+  }
 
   // Error handling middleware
   app.use((error: any, req: Request, res: Response, next: NextFunction) => handleAppError(error, req, res, next, options.errorsHandler));

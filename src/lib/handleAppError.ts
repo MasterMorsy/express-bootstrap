@@ -50,7 +50,7 @@ export function handleAppError(error: any, req: Request, res: Response, next: Ne
     },
   };
   // Optionally, include additional error details in development environment
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV !== "production") {
     errorResponse.error.stack = error.stack;
   }
 

@@ -45,6 +45,7 @@ export interface IDBConnectionOptions {
 
 export interface IBootstrapOptions {
   port?: number;
+  host?: string;
   name?: string;
   staticFolders?: IStaticFolder[];
   cors?: AppcorsProps;

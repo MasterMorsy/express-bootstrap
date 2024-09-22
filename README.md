@@ -91,6 +91,7 @@ bootstrap({
   errorsHandler: (errors) => console.log(errors),
   loggerFormat: ":remote-addr 🔗 :method ➡️ :url :status :status-color ⏱️ :response-time ms",
   port: 3000,
+  host: "localhost"
 });
 ```
 

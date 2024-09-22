@@ -74,11 +74,17 @@ async function bootstrap(options: IBootstrapOptions) {
 
   // Server configuration
   const port = Number(options?.port ?? 9000);
-  const host = "127.0.0.1";
+  const host = options.host;
 
-  app.listen(port, host, () => {
-    console.log(`SERVER: ${options.name ?? ""} Service run on ${host}:${port}`);
-  });
+  if (host) {
+    app.listen(port, host, () => {
+      console.log(`SERVER: ${options.name ?? ""} Service run on ${host}:${port}`);
+    });
+  } else {
+    app.listen(port, () => {
+      console.log(`SERVER: ${options.name ?? ""} Service run on ${host}:${port}`);
+    });
+  }
 }
 // CommonJS export
 module.exports = bootstrap;

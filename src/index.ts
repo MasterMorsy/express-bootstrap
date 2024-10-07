@@ -44,6 +44,8 @@ async function bootstrap(options: IBootstrapOptions) {
 
   const db = await connectDBs(options.db);
 
+  if (options.customHandler) options.customHandler(app, db);
+
   app.use((req: Request, res: Response, next: NextFunction) => appCors(req, res, next, options.cors, options.staticFolders, options.poweredBy));
 
   if (options.staticFolders?.length) {
@@ -85,8 +87,6 @@ async function bootstrap(options: IBootstrapOptions) {
       console.log(`SERVER: ${options.name ?? ""} Service run on ${host}:${port}`);
     });
   }
-
-  if (options.customHandler) options.customHandler(app, db);
 }
 // CommonJS export
 module.exports = bootstrap;

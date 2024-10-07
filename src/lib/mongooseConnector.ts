@@ -8,7 +8,7 @@ export default async function connectDBs(options: IDBConnectionOptions) {
     ? `mongodb://${options.user}:${options.password}@${options.host ?? "127.0.0.1"}:${options.port ?? "27017"}/${options.dbName}`
     : `mongodb://${options.host ?? "127.0.0.1"}:${options.port ?? "27017"}/${options.dbName}`;
 
-  await mongoose
+  const db = await mongoose
     .connect(uriConnection, {
       autoIndex: false,
       autoCreate: false,
@@ -25,4 +25,6 @@ export default async function connectDBs(options: IDBConnectionOptions) {
       console.log("----------- DB: Error connection database -----------");
       console.log(err);
     });
+
+  return db;
 }

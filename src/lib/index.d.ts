@@ -61,6 +61,7 @@ export interface IBootstrapOptions {
   compression: CompressionOptions;
   errorsHandler?: Function;
   poweredBy?: string;
+  customHandler?: Function;
 }
 
 interface CompressionOptions {

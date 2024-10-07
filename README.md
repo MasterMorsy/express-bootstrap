@@ -125,6 +125,7 @@ You can now run your app and the server will start with the configurations provi
 | `allowedRoutes`   | `Array`    | A list of paths that are allowed to requests without cors restrictions. | `[ "/app", "/app2" ]`                                                         |
 | `requiredHeaders` | `Array`    | A list of required headers that restrct application respond without it. | `[{ "required-header1": "your-value",},{"required-header2": "your-value",},]` |
 | `callBack`        | `Function` | A Function to handle extra application features at cors level.          | ``                                                                            |
+| `customHandler`   | `Function` | A Function to return app and db.                                        | ``                                                                            |
 
 ### Static Folders Options
 
